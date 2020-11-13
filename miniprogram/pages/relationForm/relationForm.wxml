@@ -32,7 +32,7 @@
         </van-field>
     </van-cell-group>
     <van-cell title="照片">
-      <van-uploader accept="image" file-list="{{ fileList }}" bind:after-read="afterRead" max-count="1" max-size="5000000"  bind:delete="onDeleteFile"/>
+      <van-uploader accept="image" file-list="{{ fileList }}" bind:after-read="afterRead" max-count="1" max-size="2000000"  bind:delete="onDeleteFile"/>
     </van-cell>
   </van-collapse-item>
 </van-collapse>

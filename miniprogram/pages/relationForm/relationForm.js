@@ -212,28 +212,61 @@ Page({
   afterRead(event){
     const { file } = event.detail;
     const fileNmae = `${this.data.relationForm.name ? (this.data.relationForm.name + new Date().getTime()) : new Date().getTime()}.png`;
-    this.setData({ showLoading: true });
-    wx.cloud.uploadFile({
-      // 指定上传到的云路径
-      cloudPath: fileNmae,
-      // 指定要上传的文件的小程序临时文件路径
-      filePath: file.url
-    }).then(res=>{
-      this.setData({ showLoading: false });
-      Notify({ type: 'success', message: '上传成功' });
-      this.setData({
-        ["relationForm.avatarUrl"]: res.fileID,
-        fileList: [{
-          url: file.url,
-          name: fileNmae
-        }]
-      });
-    }).catch(err=>{ 
-      this.setData({ showLoading: false });
+    wx.showLoading({
+      title: '正在加载...',
+      mask: true
     });
+    // 校验图片是否安全合规
+    wx.cloud.callFunction({
+      name: 'imgcheck',
+      data: {
+        value: file
+      }
+    }).then(securityRes=>{
+      if (securityRes.result.errCode == 87014) {
+        wx.hideLoading();
+        Notify({ type: 'danger', message: '图片含有违法违规内容' });
+        return false;
+      } else {
+        wx.cloud.uploadFile({
+          cloudPath: fileNmae, // 指定上传到的云路径
+          filePath: file.url // 指定要上传的文件的小程序临时文件路径
+        }).then(res=>{
+          wx.hideLoading();
+          Notify({ type: 'success', message: '上传成功' });
+          this.setData({
+            ["relationForm.avatarUrl"]: res.fileID,
+            fileList: [{
+              url: file.url,
+              name: fileNmae
+            }]
+          });
+        }).catch(err=>{
+          console.error("上传图片失败：",err);
+          wx.hideLoading();
+        });
+      }
+    }).catch(err=>{
+      console.error(err);
+    });
+  },
+  // 删除云存储的图片
+  deleteImg(imgId){
+    if (imgId) {
+      wx.cloud.deleteFile({
+        fileList: [imgId]
+      }).then(res=>{
+        Notify({ type: 'success', message: '删除成功' });
+      }).catch(err=>{
+        console.error(err);
+      });
+    }
   },
   // 图片删除
   onDeleteFile(){
+    if(this.data.relationForm.avatarUrl) {
+      this.deleteImg(this.data.relationForm.avatarUrl);
+    }
     this.setData({
       fileList: []
     });
