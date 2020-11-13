@@ -1,0 +1,3 @@
+<view class="echarts-container">
+  <ec-canvas id="travel-map" type="2d" ec="{{ ec }}"></ec-canvas>
+</view>

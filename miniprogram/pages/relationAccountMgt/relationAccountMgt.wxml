@@ -1,0 +1,53 @@
+<van-dialog id="van-dialog" />
+<van-notify id="van-notify" />
+<van-tabs sticky animated active="{{ activeAccount }}" bind:change="onTabChange">
+  <van-tab title="收礼" name="receive">
+    <van-cell icon="add-o" is-link title="新增账本" link-type="navigateTo" url="/pages/accountForm/accountForm">
+    </van-cell>
+    <view>
+      <van-cell-group title="收礼账本">
+        <view wx:if="{{receiveAccountList.length}}">
+          <van-swipe-cell catch:click="onReceiveView" wx:for="{{receiveAccountList}}" wx:key="index" left-width="{{ 65 }}" right-width="{{ 65 }}" data-item="{{item}}" async-close catch:close="onClose">
+            <view slot="left" class="van-swipe-cell_delete">编辑</view>
+            <van-cell title="{{item.accountName}}" value="{{item.date}}" size="large" label="{{item.remark}}" custom-class="van-cell_account" />
+            <view slot="right" class="van-swipe-cell_delete">删除</view>
+          </van-swipe-cell>
+          <van-divider wx:if="{{receiveHasMore}}" contentPosition="center">加载更多</van-divider>
+          <van-divider wx:else contentPosition="center">已全部加载</van-divider>
+        </view>
+        <van-empty wx:else description="无账本" />
+      </van-cell-group>
+    </view>
+  </van-tab>
+  <van-tab title="随礼" name="give">
+    <van-cell-group>
+      <view>
+        <van-search value="{{ searchValue }}" placeholder="请输入姓名搜索" bind:change="onChange" bind:search="onSearch"/>
+      </view>
+      <van-cell-group>
+      <van-cell icon="add-o" is-link title="添加" link-type="navigateTo" url="{{'/pages/relationForm/relationForm?params=' + accountInfoString}}"/>
+      </van-cell-group>
+      <van-row wx:if="{{giveUsersList.length}}">
+          <van-card
+            wx:for="{{giveUsersList}}"
+            wx:key="index"
+            num=""
+            tag=""
+            price="{{item.moneyBack}}"
+            desc="{{'日期：' + item.date + '，' + '事由：' + item.cause + '，' + '关系：' +item.relation + '，' + '备注：' +item.remark}}"
+            title="{{item.name}}"
+            thumb="{{ item.avatarUrl ? item.avatarUrl : defaultAvatar }}"
+            lazy-load
+          >
+            <view slot="footer">
+              <van-button size="mini" type="primary" plain bind:click="onEdit" data-item="{{item}}">编辑</van-button>
+              <van-button size="mini" type="warning" plain bind:click="onDelete" data-item="{{item}}">删除</van-button>
+            </view>
+          </van-card>
+          <van-divider wx:if="{{giveHasMore}}" contentPosition="center">加载更多</van-divider>
+          <van-divider wx:else contentPosition="center">已全部加载</van-divider>
+      </van-row>
+      <van-empty wx:else description="无数据" />
+    </van-cell-group>
+  </van-tab>
+</van-tabs>

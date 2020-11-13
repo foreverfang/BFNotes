@@ -1,0 +1,37 @@
+<!--收礼列表-->
+<van-overlay show="{{ showLoading }}" bind:click="onClickHide">
+  <view class="fang-loading">
+    <van-loading type="spinner" color="#1989fa" ></van-loading>
+  </view>
+</van-overlay>
+<van-dialog id="van-dialog" />
+<van-notify id="van-notify" />
+<view>
+  <van-search value="{{ searchValue }}" placeholder="请输入姓名搜索" bind:change="onChange" bind:search="onSearch"/>
+</view>
+<van-cell-group>
+<van-cell icon="add-o" is-link title="添加" link-type="navigateTo" url="{{'/pages/relationForm/relationForm?params=' + accountInfoString}}"/>
+</van-cell-group>
+
+<van-row wx:if="{{relationList.length}}" class="fang-loading">
+    <van-card
+      wx:for="{{relationList}}"
+      wx:key="index"
+      num=""
+      tag=""
+      price="{{item.curMoney}}"
+      desc="{{'日期：' + item.date + '，' + '事由：' + item.cause + '，' + '关系：' +item.relation + '，' + '备注：' +item.remark}}"
+      title="{{item.name}}"
+      thumb="{{ item.avatarUrl ? item.avatarUrl : defaultAvatar }}"
+      lazy-load
+    >
+      <view slot="footer">
+        <van-button size="mini" type="primary" plain bind:click="onEdit" data-item="{{item}}">编辑</van-button>
+        <van-button size="mini" type="warning" plain bind:click="onDelete" data-item="{{item}}">删除</van-button>
+      </view>
+    </van-card>
+    <van-divider wx:if="{{hasMore}}" contentPosition="center">加载更多</van-divider>
+    <van-divider wx:else contentPosition="center">已全部加载</van-divider>
+</van-row>
+<van-empty wx:else description="无数据" />
+

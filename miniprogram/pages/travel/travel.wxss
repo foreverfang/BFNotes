@@ -1,0 +1,26 @@
+.van-swipe-cell__left {
+  display: inline-block;
+  width: 65px;
+  height: 44px;
+  font-size: 15px;
+  line-height: 44px;
+  color: #fff;
+  text-align: center;
+  background-color: rgb(84, 221, 84);
+}
+.van-swipe-cell__right {
+  display: inline-block;
+  width: 65px;
+  height: 44px;
+  font-size: 15px;
+  line-height: 44px;
+  color: #fff;
+  text-align: center;
+  background-color: #f44;
+}
+/* 垂直居中 */
+.van-swipe-cell_delete {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%); /*向上偏移自身高度的50%*/
+ }

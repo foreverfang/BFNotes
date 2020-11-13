@@ -1,0 +1,73 @@
+/**app.wxss**/
+@import './miniprogram_npm/@vant/weapp/common/index.wxss';
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica,
+    Segoe UI, Arial, Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft Yahei',
+    sans-serif;
+  background-color: #fffef9;
+}
+
+.index-container {
+  height: 100%;
+  padding: 0 0 10rpx 0;
+}
+.my-list-class {
+  margin: 0 20px;
+}
+.fang-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.echarts-container{
+  position: absolute;
+  top: 260rpx;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+ec-canvas {
+  width: 100%;
+  height: 100%;
+}
+.van-button_submit {
+  width: 100%;
+}
+
+.swiper_img {
+  width: 100%;
+}
+
+.van-swipe-cell__left {
+  display: inline-block;
+  width: 65px;
+  height: 44px;
+  font-size: 15px;
+  line-height: 44px;
+  color: #fff;
+  text-align: center;
+  background-color: rgb(84, 221, 84);
+}
+.van-swipe-cell__right {
+  display: inline-block;
+  width: 65px;
+  height: 44px;
+  font-size: 15px;
+  line-height: 44px;
+  color: #fff;
+  text-align: center;
+  background-color: #f44;
+}
+/* 垂直居中 */
+.van-swipe-cell_delete {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%); /*向上偏移自身高度的50%*/
+ }

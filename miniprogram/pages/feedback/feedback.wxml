@@ -1,0 +1,8 @@
+<van-notify id="van-notify" />
+<van-cell-group title="倾听您的声音">
+  <van-field label="意见反馈" type="textarea" placeholder="您的意见很重要" value="{{feedbackInfo.remark}}" maxlength="200" autosize show-word-limit bind:change="onRemarkChange"></van-field>
+  <van-field label="联系方式" type="textarea" placeholder="" value="{{feedbackInfo.contact}}" maxlength="30" bind:change="onContactChange"></van-field>
+  <van-cell>
+    <van-button custom-class="van-button_submit" round type="primary" bind:click="onSubmit">提交</van-button>
+  </van-cell>
+</van-cell-group>

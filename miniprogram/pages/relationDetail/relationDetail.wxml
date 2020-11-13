@@ -1,0 +1,27 @@
+<van-tabs sticky animated active="{{ activeAccount }}" bind:change="onTabChange">
+  <van-tab title="收礼" name="receive"></van-tab>
+  <van-tab title="随礼" name="give"></van-tab>
+</van-tabs>
+
+<van-row wx:if="{{activeAccount === 'receive'}}">
+  <van-cell-group>
+    <van-cell title="总计" value="{{'￥' + totalAmountReceive}}"></van-cell>
+  </van-cell-group>
+  <view class="echarts-container">
+    <ec-canvas id="mychart-receive" type="2d" ec="{{ receiveEc }}"></ec-canvas>
+  </view>
+</van-row>
+
+<van-row wx:if="{{activeAccount === 'give'}}">
+  <van-cell-group>
+    <van-cell title="总计" value="{{'￥' + totalAmountGive}}"></van-cell>
+  </van-cell-group>
+  <view class="echarts-container">
+    <ec-canvas id="mychart-give" type="2d" ec="{{ giveEc }}"></ec-canvas>
+  </view>
+</van-row>
+    
+
+
+    
+

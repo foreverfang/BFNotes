@@ -1,0 +1,36 @@
+<!--我的 tabbar-->
+<van-toast id="van-toast" />
+<van-cell-group custom-class="person-main" title="">
+  <van-row>
+    <van-col span="4" offset="1">
+      <van-image lazy-load round width="120rpx" height="120rpx" src="{{userInfo.avatarUrl}}" >
+        <van-loading slot="loading" type="spinner" size="20" vertical />
+      </van-image>
+    </van-col>
+    <van-col span="12" class="person-name">
+      {{userInfo.nickName}}
+    </van-col>
+  </van-row>
+</van-cell-group>
+<van-cell-group>
+  <van-grid clickable column-num="3">
+    <van-grid-item link-type="navigateTo" url="/pages/relationDetail/relationDetail" icon="friends-o" text="人情统计" />
+    <van-grid-item link-type="navigateTo" url="/pages/travelMap/travelMap" icon="photo-o" text="环游世界" />
+    <van-grid-item icon="setting-o" text="设置" bind:click="onSet" />
+  </van-grid>
+</van-cell-group>
+
+<van-cell-group title="管理">
+  <van-cell title="关系管理" is-link link-type="navigateTo" url="/pages/relationOptionMgt/relationOptionMgt"></van-cell>
+  <van-cell title="事由管理" is-link link-type="navigateTo" url="/pages/causeOptionMgt/causeOptionMgt"></van-cell>
+</van-cell-group>
+
+<van-divider contentPosition="center">{{copyright}}</van-divider>
+<view>
+  <van-popup custom-style="height: 200rpx; width: 100%" show="{{ showSettings }}" position="bottom" bind:close="onClose">
+    <van-cell custom-class="van-cell_settings" title="意见反馈" bind:click="onFeedbackClick" />
+    <van-cell custom-class="van-cell_settings" title="分享" bind:click="onShareClick" />
+  </van-popup>
+</view>
+<van-share-sheet show="{{ showShare }}" title="立即分享给好友" options="{{ shareOptions }}" bind:select="onShareSelect" bind:close="onShareClose"/>
+

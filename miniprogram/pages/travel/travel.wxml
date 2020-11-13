@@ -1,0 +1,30 @@
+<!--我想去 tabbar-->
+<van-notify id="van-notify" />
+<van-dialog id="van-dialog" />
+<view>
+  <van-search value="{{ searchValue }}" placeholder="搜索目的地" bind:change="onChange" bind:search="onSearch"/>
+</view>
+<van-cell icon="add-o" is-link title="添加目的地" link-type="navigateTo" url="/pages/destination/destination"/>
+<van-row wx:if="{{fangTarvelList.length}}">
+  <van-swipe-cell left-width="{{ 65 }}" right-width="{{ 65 }}" wx:for="{{fangTarvelList}}" wx:key="index" data-item="{{item}}" async-close bind:close="onClose">
+    <view slot="left" class="van-swipe-cell_delete">编辑</view>
+    <van-card
+      num=""
+      tag="景点"
+      price="{{}}"
+      desc="{{'注意事项：' + item.note}}"
+      title="{{item.destination}}"
+      thumb="{{ item.travelUrl }}"
+      lazy-load
+    >
+      <view slot="footer">
+        <view>{{'备注：'+item.remark}}</view>
+      </view>
+    </van-card>
+    <view slot="right" class="van-swipe-cell_delete">删除</view>
+  </van-swipe-cell>
+  <van-divider wx:if="{{hasMore}}" contentPosition="center">加载更多</van-divider>
+  <van-divider wx:else contentPosition="center">已全部加载</van-divider>
+</van-row>
+<van-empty wx:else description="无数据" />
+

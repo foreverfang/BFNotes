@@ -1,0 +1,11 @@
+/**index.wxss**/
+/* .cell-group_index{
+  background-color: #ef4136;
+  color: #fff;
+} */
+.cell-value_index {
+  color: #ef4136 !important;
+}
+
+
+

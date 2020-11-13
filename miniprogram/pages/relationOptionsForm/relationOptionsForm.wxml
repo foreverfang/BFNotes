@@ -1,0 +1,9 @@
+<!--关系列表的新增/修改-->
+<van-notify id="van-notify" />
+<van-cell-group title="*为必填信息">
+  <van-field label="关系名称" required value="{{ relationOptionForm.relationName }}" maxlength="30" placeholder="请输入名称" bind:change="onNameChange">
+    </van-field>
+</van-cell-group>
+<van-cell>
+  <van-button custom-class="van-button_submit" round type="primary" bind:click="submit">提交</van-button>
+</van-cell>

@@ -1,0 +1,17 @@
+<!--关系管理-->
+<van-dialog id="van-dialog" />
+<van-notify id="van-notify" />
+<van-cell-group>
+<van-cell icon="add-o" is-link title="添加" link-type="navigateTo" url='/pages/relationOptionsForm/relationOptionsForm'/>
+</van-cell-group>
+
+<van-row wx:if="{{relationOptions.length}}">
+  <van-swipe-cell left-width="{{ 65 }}" right-width="{{ 65 }}" wx:for="{{relationOptions}}" wx:key="index" data-item="{{item}}" async-close bind:close="onClose">
+      <view slot="left" class="van-swipe-cell_delete">编辑</view>
+      <van-cell title="{{item.relationName}}"></van-cell>
+      <view slot="right" class="van-swipe-cell_delete">删除</view>
+    </van-swipe-cell>
+    <van-divider wx:if="{{hasMore}}" contentPosition="center">加载更多</van-divider>
+    <van-divider wx:else contentPosition="center">已全部加载</van-divider>
+</van-row>
+<van-empty wx:else description="无数据" />

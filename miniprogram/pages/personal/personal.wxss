@@ -1,0 +1,9 @@
+.person-main {
+  padding: 10rpx 0;
+}
+.person-name{
+  line-height: 120rpx;
+}
+.van-cell_settings {
+  text-align: center;
+}

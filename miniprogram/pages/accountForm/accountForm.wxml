@@ -1,0 +1,15 @@
+<van-notify id="van-notify" />
+
+<van-cell-group title="">
+  <van-field label="名称" required value="{{ accountForm.accountName }}" maxlength="30" placeholder="请输入名称" bind:change="onNameChange">
+    </van-field>
+</van-cell-group>
+<van-cell title="选择日期" value="{{ accountForm.date ? accountForm.date : '请选择' }}" bind:click="onDisplay" />
+<van-datetime-picker wx:if="{{dateShow}}"  type="date" bind:confirm="dateConfirm" bind:cancel="dateClose" formatter="{{ formatterDate }}"/>
+<van-field label="备注" value="{{ accountForm.remark }}" maxlength="100" placeholder="请输入备注" bind:change="onRemarkChange"></van-field>
+<van-cell>
+  <van-button custom-class="van-button_submit" round type="primary" bind:click="submit">提交</van-button>
+</van-cell>
+
+
+

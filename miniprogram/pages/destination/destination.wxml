@@ -1,0 +1,16 @@
+<van-notify id="van-notify" />
+<van-cell-group title="环游世界">
+  <van-field label="旅游目的地" value="{{ destinationForm.destination }}" required maxlength="50" placeholder="请输入目的地"  bind:change="onDestinationChange">
+    </van-field>
+    <van-field label="注意事项"  value="{{ destinationForm.note }}" type="textarea" autosize maxlength="200" show-word-limit placeholder="请输入注意事项"  bind:change="onNoteChange">
+    </van-field>
+    <van-field label="备注" value="{{ destinationForm.remark }}" type="textarea" autosize maxlength="100" show-word-limit placeholder="请输入备注"  bind:change="onRemarkChange">
+    </van-field>
+</van-cell-group>
+<van-cell title="景点图片">
+  <van-uploader accept="image"  file-list="{{ fileList }}" bind:after-read="afterRead" max-count="1" max-size="5000000"  bind:delete="onDeleteFile"/>
+</van-cell>
+<van-cell>
+  <van-button type="primary" custom-class="van-button_submit" round bind:click="onSubmit">提交</van-button>
+</van-cell>
+

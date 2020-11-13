@@ -1,0 +1,44 @@
+<!-- <van-notice-bar left-icon="volume-o" mode="closeable" text="圣托里尼岛(Santorini)古名为希拉(Thera)，后来为纪念圣·爱莲（SaintIrene），于1207年被改为圣托里尼。圣托里尼（Santorini）是在希腊大陆东南200公里的爱琴海上由一群火山组成的岛环，圣托里尼岛环上最大的一个岛也叫圣托里尼岛，别名锡拉岛（Thira）。"/> -->
+<view class="index-container">
+  <!--轮播图-->
+  <view>
+    <swiper class="swiper_img" indicator-dots="{{true}}" autoplay="{{true}}" interval="{{interval}}" circular="{{true}}">
+        <block wx:for="{{indexImgList}}" wx:key="index">
+          <swiper-item>
+            <van-image width="100%" height="150" src="{{item.travelUrl}}" />
+          </swiper-item>
+        </block>
+      </swiper>
+  </view>
+  <!-- <van-cell-group custom-class="cell-group_index" title="收礼一览">
+    <view wx:if="{{favorReceiveList.length}}">
+      <van-cell value-class="cell-value_index" wx:for="{{favorReceiveList}}" wx:key="_id" title="{{index+1}}" value="{{item.name + ' ' + item.money + '元'}}"></van-cell>
+    </view>
+    <van-empty wx:else description="无数据" />
+  </van-cell-group> -->
+
+  <van-cell-group title="我的收礼账本">
+    <view wx:if="{{receiveTotalList.length}}">
+      <van-panel wx:for="{{receiveTotalList}}" wx:key="index" title="{{item.year}}年份" desc="总金额：￥{{item.totalMoney}}" status="">
+        <!-- <view>账本内容</view> -->
+      </van-panel>
+    </view>
+    <van-empty wx:else description="无数据" />
+  </van-cell-group>
+
+  <!-- <van-cell-group custom-class="cell-group_index" title="随礼一览">
+    <view wx:if="{{favorGiveList.length}}">
+      <van-cell value-class="cell-value_index" wx:for="{{favorGiveList}}" wx:key="_id" title="{{index+1}}" value="{{item.name + ' ' + item.moneyBack + '元'}}"></van-cell>
+    </view>
+    <van-empty wx:else description="无数据" />
+  </van-cell-group> -->
+
+  <van-cell-group title="我的随礼账本">
+    <view wx:if="{{giveTotalList.length}}">
+      <van-panel wx:for="{{giveTotalList}}" wx:key="index" title="{{item.year}}年份" desc="总金额：￥{{item.totalMoney}}" status="">
+        <!-- <view>账本内容</view> -->
+      </van-panel>
+    </view>
+    <van-empty wx:else description="无数据" />
+  </van-cell-group>
+</view>
