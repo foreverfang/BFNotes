@@ -213,7 +213,7 @@ Page({
     const { file } = event.detail;
     const fileNmae = `${this.data.relationForm.name ? (this.data.relationForm.name + new Date().getTime()) : new Date().getTime()}.png`;
     wx.showLoading({
-      title: '正在加载...',
+      title: '正在上传...',
       mask: true
     });
     // 校验图片是否安全合规
@@ -223,7 +223,7 @@ Page({
         value: file
       }
     }).then(securityRes=>{
-      if (securityRes.result.errCode == 87014) {
+      if (securityRes.result.errCode === 87014) {
         wx.hideLoading();
         Notify({ type: 'danger', message: '图片含有违法违规内容' });
         return false;
@@ -285,49 +285,70 @@ Page({
       Notify({ type: 'warning', message: '金额必填' });
       return false;
     }
-    const that = this;
-    const db = wx.cloud.database({env:'scallop-2g4ppt2ya3b48261'});
-    that.setData({ showLoading: true });
-    const collectionName = that.data.relationForm.accountType === 'receive' ? 'fang_receive_users' : 'fang_give_users';
-    const dateToYear = that.data.relationForm.date ? new Date(that.data.relationForm.date).getFullYear() : new Date().getFullYear();
-    if (that.data.actionType === "ADD") {
-      const params = Object.assign({},that.data.relationForm, {createTime: db.serverDate(), year: dateToYear});
-      db.collection(collectionName).add({
-        data: {...params}
-      }).then(res=>{
-        that.setData({ showLoading: false });
-        Notify({ type: 'success', message: '提交成功' });
-        wx.navigateBack();
-      }).catch(err=>{
-        that.setData({ showLoading: false });
-        Notify({ type: 'danger', message: err });
-      });
-    } else {
-      const params = {
-        name: that.data.relationForm.name,
-        money: that.data.relationForm.money,
-        moneyBack: that.data.relationForm.moneyBack,
-        relation: that.data.relationForm.relation, 
-        date: that.data.relationForm.date, 
-        cause: that.data.relationForm.cause, 
-        remark: that.data.relationForm.remark,
-        avatarUrl: that.data.relationForm.avatarUrl,
-        createTime: that.data.relationForm.createTime,
-        accountType: that.data.relationForm.accountType,
-        accountId: that.data.relationForm.accountId,
-        updateTime: db.serverDate(),
-        year: dateToYear
-      };
-      db.collection(collectionName).doc(that.data.relationForm._id).update({
-        data: {...params}
-      }).then(res=>{
-        that.setData({ showLoading: false });
-         Notify({ type: 'success', message: '修改成功' });
-         wx.navigateBack();
-      }).catch(err=>{
-        Notify({ type: 'danger', message: err });
-        that.setData({ showLoading: false });
-      })
-    }
+    wx.showLoading({
+      title: '正在提交...',
+      mask: true
+    });
+
+    // 内容是否违规违法检测
+    const checkContent = this.data.relationForm.name + this.data.relationForm.remark;
+    wx.cloud.callFunction({
+      name: 'msgcheck',
+      data: {
+        content: checkContent
+      }
+    }).then(securityRes=>{
+      if (securityRes.result.errCode === 87014) {
+        wx.hideLoading();
+        Notify({ type: 'danger', message: '内容含有违法违规内容' });
+        return false;
+      } else {
+        const that = this;
+        const db = wx.cloud.database({env:'scallop-2g4ppt2ya3b48261'});
+        const collectionName = that.data.relationForm.accountType === 'receive' ? 'fang_receive_users' : 'fang_give_users';
+        const dateToYear = that.data.relationForm.date ? new Date(that.data.relationForm.date).getFullYear() : new Date().getFullYear();
+        if (that.data.actionType === "ADD") {
+          const params = Object.assign({},that.data.relationForm, {createTime: db.serverDate(), year: dateToYear});
+          db.collection(collectionName).add({
+            data: {...params}
+          }).then(res=>{
+            wx.hideLoading();
+            Notify({ type: 'success', message: '提交成功' });
+            wx.navigateBack();
+          }).catch(err=>{
+            wx.hideLoading();
+            Notify({ type: 'danger', message: err });
+          });
+        } else {
+          const params = {
+            name: that.data.relationForm.name,
+            money: that.data.relationForm.money,
+            moneyBack: that.data.relationForm.moneyBack,
+            relation: that.data.relationForm.relation, 
+            date: that.data.relationForm.date, 
+            cause: that.data.relationForm.cause, 
+            remark: that.data.relationForm.remark,
+            avatarUrl: that.data.relationForm.avatarUrl,
+            createTime: that.data.relationForm.createTime,
+            accountType: that.data.relationForm.accountType,
+            accountId: that.data.relationForm.accountId,
+            updateTime: db.serverDate(),
+            year: dateToYear
+          };
+          db.collection(collectionName).doc(that.data.relationForm._id).update({
+            data: {...params}
+          }).then(res=>{
+            wx.hideLoading();
+            Notify({ type: 'success', message: '修改成功' });
+            wx.navigateBack();
+          }).catch(err=>{
+            wx.hideLoading();
+            that.setData({ showLoading: false });
+          })
+        }
+      }
+    }).catch(err=>{
+      console.error(err)
+    });
   }
 })

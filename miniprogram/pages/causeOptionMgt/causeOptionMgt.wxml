@@ -11,7 +11,7 @@
       <van-cell title="{{item.causeName}}"></van-cell>
       <view slot="right" class="van-swipe-cell_delete">删除</view>
     </van-swipe-cell>
-    <van-divider wx:if="{{hasMore}}" contentPosition="center">加载更多</van-divider>
-    <van-divider wx:else contentPosition="center">已全部加载</van-divider>
 </van-row>
 <van-empty wx:else description="无数据" />
+<van-divider wx:if="{{hasMore}}" contentPosition="center">加载更多</van-divider>
+<van-divider wx:else contentPosition="center">已全部加载</van-divider>

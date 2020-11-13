@@ -107,43 +107,59 @@ Page({
       Notify({ type: 'warning', message: '目的地必填' });
       return;
     }
-    const db = wx.cloud.database({env:'scallop-2g4ppt2ya3b48261'});
     wx.showLoading({
-      title: '正在加载...',
+      title: '正在提交...',
       mask: true
     });
-    if (this.data.actionType === "ADD") {
-      const params = Object.assign({},this.data.destinationForm, {createTime: db.serverDate()});
-      db.collection('fang_travel').add({
-        data: {...params}
-      }).then(res=>{
+    // 内容是否违规违法检测
+    const checkContent = this.data.destinationForm.destination + this.data.destinationForm.note + this.data.destinationForm.destination + this.data.destinationForm.remark;
+    wx.cloud.callFunction({
+      name: 'msgcheck',
+      data: {
+        content: checkContent
+      }
+    }).then(securityRes=>{
+      if (securityRes.result.errCode === 87014) {
         wx.hideLoading();
-        Notify({ type: 'success', message: '提交成功' });
-        wx.navigateBack();
-      }).catch(err=>{
-        wx.hideLoading();
-        Notify({ type: 'danger', message: err });
-      });
-    } else {
-      const params = {
-        destination: this.data.destinationForm.destination,
-        note: this.data.destinationForm.note,
-        remark: this.data.destinationForm.remark,
-        travelUrl: this.data.destinationForm.travelUrl,
-        createTime: this.data.destinationForm.createTime,
-        updateTime: db.serverDate()
-      };
-      db.collection('fang_travel').doc(this.data.destinationForm._id).update({
-        data: {...params}
-      }).then(res=>{
-         wx.hideLoading();
-         Notify({ type: 'success', message: '修改成功' });
-         wx.navigateBack();
-      }).catch(err=>{
-        Notify({ type: 'danger', message: err });
-        wx.hideLoading();
-      })
-    }
+        Notify({ type: 'danger', message: '内容含有违法违规内容' });
+        return false;
+      } else {
+        const db = wx.cloud.database({env:'scallop-2g4ppt2ya3b48261'});
+        if (this.data.actionType === "ADD") {
+          const params = Object.assign({},this.data.destinationForm, {createTime: db.serverDate()});
+          db.collection('fang_travel').add({
+            data: {...params}
+          }).then(res=>{
+            wx.hideLoading();
+            Notify({ type: 'success', message: '提交成功' });
+            wx.navigateBack();
+          }).catch(err=>{
+            wx.hideLoading();
+            Notify({ type: 'danger', message: err });
+          });
+        } else {
+          const params = {
+            destination: this.data.destinationForm.destination,
+            note: this.data.destinationForm.note,
+            remark: this.data.destinationForm.remark,
+            travelUrl: this.data.destinationForm.travelUrl,
+            createTime: this.data.destinationForm.createTime,
+            updateTime: db.serverDate()
+          };
+          db.collection('fang_travel').doc(this.data.destinationForm._id).update({
+            data: {...params}
+          }).then(res=>{
+            wx.hideLoading();
+            Notify({ type: 'success', message: '修改成功' });
+            wx.navigateBack();
+          }).catch(err=>{
+            Notify({ type: 'danger', message: err });
+            wx.hideLoading();
+          })
+        }
+      }
+    }).catch(err=>{
+      console.error(err);
+    });
   }
-  
 })

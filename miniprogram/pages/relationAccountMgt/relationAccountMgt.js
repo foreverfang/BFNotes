@@ -131,15 +131,26 @@ Page({
         break;
       case 'right':
         Dialog.confirm({
-          message: '确定删除吗？'
+          message: '删除账本，该账本相关的数据也会被全部清空，确定删除吗？'
         }).then(() => {
           const db = wx.cloud.database({env:'scallop-2g4ppt2ya3b48261'});
           const rowId = item._id;
-          // 删除数据 
+          // 删除账本 
           db.collection('fang_account_receive').doc(rowId).remove().then(res=>{
-            Notify({ type: 'success', message: '删除成功' });
-            instance.close();
-            this.getAccountReceiveList();
+            // 删除账本关联的数据
+            wx.cloud.callFunction({
+              name: 'batchdel',
+              data: {
+                accountId: rowId
+              }
+            }).then(resp=>{
+              Notify({ type: 'success', message: '删除成功' });
+              instance.close();
+              this.getAccountReceiveList();
+            }).catch(err=>{
+              instance.close();
+              console.error("账本内部数据删除失败：", err);
+            })
           }).catch(err=>{
             Notify({ type: 'warning', message: '删除失败' });
             instance.close();
@@ -223,7 +234,7 @@ Page({
       const db = wx.cloud.database({env:'scallop-2g4ppt2ya3b48261'});
       const rowId = e.currentTarget.dataset.item._id;
       const imgId = e.currentTarget.dataset.item.avatarUrl;
-      db.collection('fang_receive_users').doc(rowId).remove({
+      db.collection('fang_give_users').doc(rowId).remove({
         success: res=>{
           // 删除数据 同时删除云存储的图片文件
           if (imgId) {
@@ -234,7 +245,7 @@ Page({
             });
           }
           Notify({ type: 'success', message: '删除成功' });
-          that.getRelationList();
+          that.getAccountGiveList();
         },
         fail: err=>{
           Notify({ type: 'danger', message: '删除失败' });

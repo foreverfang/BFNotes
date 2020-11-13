@@ -30,8 +30,7 @@
         <van-button size="mini" type="warning" plain bind:click="onDelete" data-item="{{item}}">删除</van-button>
       </view>
     </van-card>
-    <van-divider wx:if="{{hasMore}}" contentPosition="center">加载更多</van-divider>
-    <van-divider wx:else contentPosition="center">已全部加载</van-divider>
 </van-row>
 <van-empty wx:else description="无数据" />
-
+<van-divider wx:if="{{hasMore}}" contentPosition="center">加载更多</van-divider>
+<van-divider wx:else contentPosition="center">已全部加载</van-divider>

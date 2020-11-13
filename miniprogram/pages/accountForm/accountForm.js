@@ -70,41 +70,58 @@ Page({
       Notify({ type: 'warning', message: '名称必填' });
       return;
     }
-    const db = wx.cloud.database({env:'scallop-2g4ppt2ya3b48261'});
     wx.showLoading({
       title: '正在提交...',
       mask: true
     });
-    if (this.data.actionType === "ADD") {
-      const params = Object.assign({},this.data.accountForm, {createTime: db.serverDate()});
-      db.collection('fang_account_receive').add({
-        data: {...params}
-      }).then(res=>{
+    // 内容是否违规违法检测
+    const checkContent = this.data.accountForm.accountName + this.data.accountForm.remark;
+    wx.cloud.callFunction({
+      name: 'msgcheck',
+      data: {
+        content: checkContent
+      }
+    }).then(securityRes=>{
+      if (securityRes.result.errCode === 87014) {
         wx.hideLoading();
-        Notify({ type: 'success', message: '提交成功' });
-        wx.navigateBack();
-      }).catch(err=>{
-        wx.hideLoading();
-        Notify({ type: 'danger', message: err });
-      });
-    } else {
-      const params = {
-        accountName: this.data.accountForm.accountName,
-        date: this.data.accountForm.date, 
-        remark: this.data.accountForm.remark,
-        createTime: this.data.accountForm.createTime,
-        updateTime: db.serverDate()
-      };
-      db.collection('fang_account_receive').doc(this.data.accountForm._id).update({
-        data: {...params}
-      }).then(res=>{
-        wx.hideLoading();
-         Notify({ type: 'success', message: '修改成功' });
-         wx.navigateBack();
-      }).catch(err=>{
-        Notify({ type: 'danger', message: err });
-        wx.hideLoading();
-      })
-    }
+        Notify({ type: 'danger', message: '内容含有违法违规内容' });
+        return false;
+      } else {
+        const db = wx.cloud.database({env:'scallop-2g4ppt2ya3b48261'});
+        if (this.data.actionType === "ADD") {
+          const params = Object.assign({},this.data.accountForm, {createTime: db.serverDate()});
+          db.collection('fang_account_receive').add({
+            data: {...params}
+          }).then(res=>{
+            wx.hideLoading();
+            Notify({ type: 'success', message: '提交成功' });
+            wx.navigateBack();
+          }).catch(err=>{
+            wx.hideLoading();
+            Notify({ type: 'danger', message: err });
+          });
+        } else {
+          const params = {
+            accountName: this.data.accountForm.accountName,
+            date: this.data.accountForm.date, 
+            remark: this.data.accountForm.remark,
+            createTime: this.data.accountForm.createTime,
+            updateTime: db.serverDate()
+          };
+          db.collection('fang_account_receive').doc(this.data.accountForm._id).update({
+            data: {...params}
+          }).then(res=>{
+            wx.hideLoading();
+            Notify({ type: 'success', message: '修改成功' });
+            wx.navigateBack();
+          }).catch(err=>{
+            Notify({ type: 'danger', message: err });
+            wx.hideLoading();
+          })
+        }
+      }
+    }).catch(err=>{
+      console.error(err);
+    });
   }
 })
