@@ -10,7 +10,7 @@ Page({
     receiveHasMore: true,
     giveUsersList: [], 
     giveTotal: 0, // 随礼总条数
-    givePageSize: 5, // 随礼每页显示条数
+    givePageSize: 10, // 随礼每页显示条数
     givePage: 1, // 随礼当前页
     giveHasMore: true,
     accountInfoString: '',
@@ -19,6 +19,9 @@ Page({
   },
   onShow(){
     this.getAccountReceiveList();
+    this.setData({
+      searchValue: ''
+    });
     this.getAccountGiveList();
     this.setData({
       accountInfoString: JSON.stringify({accountType: 'give', accountId: ""})
@@ -36,16 +39,71 @@ Page({
       title: '正在加载...',
       mask: true
     });
-    db.collection('fang_account_receive').limit(that.data.receivePageSize).get().then(res=>{
-      wx.hideLoading();
-      wx.stopPullDownRefresh();
+    const accountRes = await db.collection('fang_account_receive').orderBy('createTime', 'desc').limit(that.data.receivePageSize).get();
+    wx.hideLoading();
+    wx.stopPullDownRefresh();
+    if (accountRes.data) {
+      // 获取账本所有数据
+      const accountData = await that.formatAccountList(accountRes.data);
       that.setData({
-        receiveAccountList: res.data,
-        receiveHasMore: res.data.length < that.data.receiveTotal ? true : false
+        receiveAccountList: accountData,
+        receiveHasMore: accountRes.data.length < that.data.receiveTotal ? true : false
       });
-    }).catch(err=>{
-      wx.hideLoading();
-      Notify({ type: 'danger', message: err });
+    } else {
+      Notify({ type: 'danger', message: accountData });
+    }
+  },
+  // 账本数据格式化
+  async formatAccountList(data){
+    let dataset = [];
+    for (let i = 0; i < data.length; i++) {
+      // 获取当前账本所属的所有数据
+      const item = await this.getAccountAllUsers(data[i]._id);
+      const itemData = item.data;
+      let moneyList = []; // 金额list
+      itemData.forEach(ele=>{
+        moneyList.push(ele.money);
+      });
+      let totalMoney = parseFloat(0).toFixed(2);
+      if (moneyList.length) {
+        // 计算账本总金额，保留2位小数
+        totalMoney = parseFloat(moneyList.reduce((cur, pre)=> parseFloat(cur) + parseFloat(pre))).toFixed(2); 
+      }
+      dataset.push(Object.assign({}, data[i], { totalMoney: totalMoney }));
+    }
+    return dataset;
+  },
+
+  /**
+   * 查账本所属的所有数据，便于计算总金额
+   * accountId 账本id
+   */ 
+  async getAccountAllUsers(accountId) {
+    const db = wx.cloud.database({env:'scallop-2g4ppt2ya3b48261'});
+    const PAGE_SIZE = 20; // 每次查20条
+    const result =  await db.collection('fang_receive_users').where({
+      accountId: accountId // 筛选当前账本的数据
+    }).count(); // 查总共多少条数据
+    const total = result.total;
+    const batchTimes = Math.ceil(total/PAGE_SIZE); // 计算分几次取数据
+    const tasks = [];
+    wx.showLoading({
+      title: '正在加载...',
+      mask: true
+    });
+    for(let i =0; i < batchTimes; i++){
+      const promise = db.collection('fang_receive_users').where({ accountId: accountId }).skip(i*PAGE_SIZE).limit(PAGE_SIZE).get();
+      tasks.push(promise);
+    }
+    const resultData = await Promise.all(tasks); 
+    wx.hideLoading();
+    if (resultData.length <=0) {
+      return { data: []};
+    }
+    return resultData.reduce((pre, cur)=>{
+      return {
+        data: pre.data.concat(cur.data)
+      };
     });
   },
   getMoreData(tabName){
@@ -64,7 +122,7 @@ Page({
         title: '正在加载...',
         mask: true
       })
-      db.collection(collectionName).skip(that.data[page] * that.data[pageSize]).limit(that.data[pageSize]).get()
+      db.collection(collectionName).orderBy('createTime', 'desc').skip(that.data[page] * that.data[pageSize]).limit(that.data[pageSize]).get()
         .then(res=>{
           wx.hideLoading();
           if (res.data.length) {
@@ -160,6 +218,18 @@ Page({
     }
   },
 
+  // 下拉刷新
+  onPullDownRefresh(){
+    if (this.data.activeAccount === 'receive') {
+      this.getAccountReceiveList();
+    } else {
+      this.setData({
+        searchValue: ''
+      });
+      this.getAccountGiveList();
+    }
+  },
+
   /**
    * 随礼tab列表
     */ 
@@ -175,12 +245,12 @@ Page({
       title: '正在加载...',
       mask: true
     });
-    db.collection('fang_give_users').limit(that.data.givePageSize).get().then(res=>{
+    db.collection('fang_give_users').orderBy('createTime', 'desc').limit(that.data.givePageSize).get().then(res=>{
       wx.hideLoading();
       wx.stopPullDownRefresh();
       that.setData({
         giveUsersList: res.data,
-        giveHasMore: res.data.length < that.data.receiveTotal ? true : false
+        giveHasMore: res.data.length < that.data.giveTotal ? true : false
       });
     }).catch(err=>{
       wx.hideLoading();

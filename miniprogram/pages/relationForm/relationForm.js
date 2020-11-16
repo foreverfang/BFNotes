@@ -33,14 +33,14 @@ Page({
     relationOptions: [],
     relationShow: false,
     causeOptions: [],
-    causeShow: false
+    causeShow: false,
+    isMoneyValied: true //校验金额是否为数字
   },
   formatOptions(data, name) {
     let dataset = [];
     for (let i = 0; i < data.length; i++) {
       dataset.push(data[i][name]);
     }
-    console.log(name+"-dataset=", dataset);
     return dataset;
   },
   async onLoad(option){
@@ -51,7 +51,8 @@ Page({
       relationOptions: this.formatOptions(relationData.data, 'relationName'),
       causeOptions: this.formatOptions(causeData.data, 'causeName')
     });
-    if(option.item){
+    // 编辑跳转
+    if(option.item) {
       const data = JSON.parse(option.item);
       this.setData({
         relationForm: data,
@@ -62,9 +63,10 @@ Page({
         }]
       })
     }else if(option.params) {
+      // 新增跳转
       const dataParams = JSON.parse(option.params);
       this.setData({
-        ["relationForm.date"]: this.formatDate(new Date()),
+        ["relationForm.date"]: this.formatDate(dataParams.date ? dataParams.date : new Date()),
         ["relationForm.accountType"]: dataParams.accountType,
         ["relationForm.accountId"]: dataParams.accountId
       });
@@ -102,14 +104,32 @@ Page({
       ["relationForm.name"]: e.detail
     });
   },
+  validateMoney(money){
+    const validInteger = /^\d+(\.\d+)?$/;
+    let isValid = true;
+    if (!validInteger.test(money)) {
+      isValid = false;
+    }
+    return isValid;
+  },
   onMoneyChange(e){
+    const isValid = this.validateMoney(e.detail);
+    if (!isValid) {
+      Notify({ type: 'warning', message: '只能输入数字' });
+    }
     this.setData({
       ["relationForm.money"]: e.detail,
+      isMoneyValied: isValid
     });
   },
   onMoneyOutChange(e){
+    const isValid = this.validateMoney(e.detail);
+    if (!isValid) {
+      Notify({ type: 'warning', message: '只能输入数字' });
+    }
     this.setData({
       ["relationForm.moneyBack"]: e.detail,
+      isMoneyValied: isValid
     });
   },
   // 关系
@@ -283,6 +303,10 @@ Page({
       return false;
     } else if (this.data.relationForm.accountType === 'give' && !this.data.relationForm.moneyBack) { // 随礼账本的新增编辑
       Notify({ type: 'warning', message: '金额必填' });
+      return false;
+    }
+    if(!this.data.isMoneyValied){
+      Notify({ type: 'warning', message: '只能输入数字' });
       return false;
     }
     wx.showLoading({

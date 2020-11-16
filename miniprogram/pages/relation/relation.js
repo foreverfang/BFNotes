@@ -6,7 +6,7 @@ Page({
     searchValue: '',
     defaultAvatar: 'cloud://scallop-2g4ppt2ya3b48261.7363-scallop-2g4ppt2ya3b48261-1303979843/defaultAvatar.jpg',
     total: 0, // 总条数
-    pageSize: 5, // 每页显示条数
+    pageSize: 10, // 每页显示条数
     page: 1, // 当前页
     hasMore: true,
     accountInfo: {}, // 账本信息
@@ -34,7 +34,7 @@ Page({
       title: '正在加载...',
       mask: true
     });
-    db.collection('fang_receive_users').where({
+    db.collection('fang_receive_users').orderBy('createTime', 'desc').where({
       accountId: that.data.accountInfo.accountId // 筛选当前账本的数据
     }).limit(that.data.pageSize).get().then(res=>{
       wx.hideLoading();
@@ -60,8 +60,8 @@ Page({
         title: '正在加载...',
         mask: true
       });
-      // 根据名字排序
-      db.collection('fang_receive_users').where({
+      // 根据创建时间排序
+      db.collection('fang_receive_users').orderBy('createTime', 'desc').where({
         accountId: that.data.accountInfo.accountId
       }).skip(that.data.page * that.data.pageSize).limit(that.data.pageSize).get()
         .then(res=>{

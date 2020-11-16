@@ -9,11 +9,11 @@
         <view wx:if="{{receiveAccountList.length}}">
           <van-swipe-cell catch:click="onReceiveView" wx:for="{{receiveAccountList}}" wx:key="index" left-width="{{ 65 }}" right-width="{{ 65 }}" data-item="{{item}}" async-close catch:close="onClose">
             <view slot="left" class="van-swipe-cell_delete">编辑</view>
-            <van-cell title="{{item.accountName}}" value="{{item.date}}" size="large" label="{{item.remark}}" custom-class="van-cell_account" />
+            <van-cell title="{{item.accountName}}" value="{{item.date}}" size="large" label="{{'总金额：￥'+ item.totalMoney}}" custom-class="van-cell_account" />
             <view slot="right" class="van-swipe-cell_delete">删除</view>
           </van-swipe-cell>
-          <van-divider wx:if="{{receiveHasMore}}" contentPosition="center">加载更多</van-divider>
-          <van-divider wx:else contentPosition="center">已全部加载</van-divider>
+          <van-divider wx:if="{{receiveHasMore}}" contentPosition="center">加载更多（共{{receiveTotal}}条）</van-divider>
+          <van-divider wx:else contentPosition="center">已全部加载（共{{receiveTotal}}条）</van-divider>
         </view>
         <van-empty wx:else description="无账本" />
       </van-cell-group>
@@ -46,8 +46,8 @@
           </van-card>
       </van-row>
       <van-empty wx:else description="无数据" />
-      <van-divider wx:if="{{giveHasMore}}" contentPosition="center">加载更多</van-divider>
-      <van-divider wx:else contentPosition="center">已全部加载</van-divider>
+      <van-divider wx:if="{{giveHasMore}}" contentPosition="center">加载更多（共{{giveTotal}}条）</van-divider>
+      <van-divider wx:else contentPosition="center">已全部加载（共{{giveTotal}}条）</van-divider>
     </van-cell-group>
   </van-tab>
 </van-tabs>

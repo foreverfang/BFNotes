@@ -22,7 +22,7 @@ Page({
       title: '正在加载...',
       mask: true
     });
-    db.collection('fang_travel').limit(that.data.pageSize).orderBy('destination', 'desc').get().then(res=>{
+    db.collection('fang_travel').orderBy('createTime', 'desc').limit(that.data.pageSize).get().then(res=>{
       wx.hideLoading();
       wx.stopPullDownRefresh();
       that.setData({
@@ -44,7 +44,9 @@ Page({
         title: '正在加载...',
         mask: true
       });
-      db.collection('fang_travel').skip(that.data.page * that.data.pageSize).limit(that.data.pageSize).orderBy('destination', 'desc').get()
+      db.collection('fang_travel').orderBy('createTime', 'desc')
+        .skip(that.data.page * that.data.pageSize)
+        .limit(that.data.pageSize).get()
         .then(res=>{
           wx.hideLoading();
           if (res.data.length) {

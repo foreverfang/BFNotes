@@ -5,7 +5,7 @@ Page({
   data: {
     causeOptions: [],
     total: 0, // 总条数
-    pageSize: 15, // 每页显示条数
+    pageSize: 20, // 每页显示条数
     page: 1, // 当前页
     hasMore: true
   },
@@ -21,7 +21,7 @@ Page({
       title: '正在加载...',
       mask: true
     });
-    db.collection('fang_cause_options').limit(that.data.pageSize).get().then(res=>{
+    db.collection('fang_cause_options').orderBy('createTime', 'desc').limit(that.data.pageSize).get().then(res=>{
       wx.hideLoading();
       wx.stopPullDownRefresh();
       that.setData({
@@ -43,7 +43,7 @@ Page({
         title: '正在加载...',
         mask: true
       });
-      db.collection('fang_cause_options').skip(that.data.page * that.data.pageSize).limit(that.data.pageSize).orderBy('destination', 'desc').get()
+      db.collection('fang_cause_options').orderBy('createTime', 'desc').skip(that.data.page * that.data.pageSize).limit(that.data.pageSize).orderBy('destination', 'desc').get()
         .then(res=>{
           wx.hideLoading();
           if (res.data.length) {
