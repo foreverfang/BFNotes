@@ -231,7 +231,7 @@ Page({
   // 图片上传
   afterRead(event){
     const { file } = event.detail;
-    const fileNmae = `${this.data.relationForm.name ? (this.data.relationForm.name + new Date().getTime()) : new Date().getTime()}.png`;
+    const fileName = `${this.data.relationForm.name ? (this.data.relationForm.name + new Date().getTime()) : new Date().getTime()}.png`;
     wx.showLoading({
       title: '正在上传...',
       mask: true
@@ -249,7 +249,7 @@ Page({
         return false;
       } else {
         wx.cloud.uploadFile({
-          cloudPath: fileNmae, // 指定上传到的云路径
+          cloudPath: fileName, // 指定上传到的云路径
           filePath: file.url // 指定要上传的文件的小程序临时文件路径
         }).then(res=>{
           wx.hideLoading();
@@ -258,7 +258,7 @@ Page({
             ["relationForm.avatarUrl"]: res.fileID,
             fileList: [{
               url: file.url,
-              name: fileNmae
+              name: fileName
             }]
           });
         }).catch(err=>{

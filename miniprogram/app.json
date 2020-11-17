@@ -13,7 +13,8 @@
     "pages/relationOptionMgt/relationOptionMgt",
     "pages/relationOptionsForm/relationOptionsForm",
     "pages/causeOptionMgt/causeOptionMgt",
-    "pages/causeOptionsForm/causeOptionsForm"
+    "pages/causeOptionsForm/causeOptionsForm",
+    "pages/relationAccountDetail/relationAccountDetail"
   ],
   "window":{
     "backgroundTextStyle":"light",

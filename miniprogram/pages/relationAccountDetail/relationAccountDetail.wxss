@@ -1,0 +1,10 @@
+.account-detail-title {
+  text-align: center;
+  margin: 20rpx 10rpx;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-weight: bold;
+}
+.account-detail-name{
+  padding: 0 5rpx;
+  color: #f47920;
+}

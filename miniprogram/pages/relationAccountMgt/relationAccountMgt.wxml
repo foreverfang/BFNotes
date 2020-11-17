@@ -50,4 +50,23 @@
       <van-divider wx:else contentPosition="center">已全部加载（共{{giveTotal}}条）</van-divider>
     </van-cell-group>
   </van-tab>
+  <van-tab use-label-slot title="明细" name="detail">
+    <van-notice-bar left-icon="volume-o" color="#1989fa" background="#ecf9ff" wrapable mode="closeable" text="差账：'我'欠ta人情，余账：ta欠'我'人情，平账：'我'和ta两清。"/>
+    <view>
+        <van-search value="{{ detailSearchValue }}" placeholder="请输入姓名搜索" bind:change="onDetailChange" bind:search="onDetailSearch"/>
+      </view>
+    <van-cell-group>
+      <van-cell wx:for="{{accountDetailList}}" wx:key="index" use-label-slot is-link value="{{'￥'+item.difference}}" link-type="navigateTo" url="{{'/pages/relationAccountDetail/relationAccountDetail?params=' + item.accountInfoString}}">
+        <view slot="title">
+          <view class="van-cell-text">{{item.name}} <van-tag type="{{item.tagType}}">{{item.status}}</van-tag></view>
+        </view>
+        <view slot="label">
+          <view>随礼：￥{{item.receiveTotal}}</view>
+          <view>收礼：￥{{item.giveTotal}}</view>
+        </view>
+      </van-cell>
+    </van-cell-group>
+    <van-divider wx:if="{{accountDetailTotal}}" contentPosition="center">已全部加载（共{{accountDetailTotal}}条）</van-divider>
+    <van-empty wx:else description="无数据" />
+  </van-tab>
 </van-tabs>

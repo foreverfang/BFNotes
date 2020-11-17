@@ -1,0 +1,18 @@
+<!--人情管理-明细-->
+<view>
+  <view class="account-detail-title">
+    与<text class="account-detail-name">{{accountInfo.name}}</text>的人情往来明细
+  </view>
+  <van-cell-group title="我的收礼">
+    <view wx:if="{{accountInfo.receiveList.length}}">
+      <van-cell wx:for="{{accountInfo.receiveList}}" wx:key="index" title="{{'金额：￥'+ item.money}}" value="{{'日期：'+ item.date}}"></van-cell>
+    </view>
+    <van-empty wx:else description="无数据" />
+  </van-cell-group>
+  <van-cell-group title="我的随礼">
+    <view wx:if="{{accountInfo.giveList.length}}">
+      <van-cell wx:for="{{accountInfo.giveList}}" wx:key="index" title="{{'金额：￥'+ item.moneyBack}}" value="{{'日期：'+ item.date}}"></van-cell>
+    </view>
+    <van-empty wx:else description="无数据" />
+  </van-cell-group>
+</view>
