@@ -137,7 +137,7 @@ Page({
           wx.hideLoading();
           if (res.data.length) {
             that.setData({
-              [list]: that.data[list].concat(res.data),
+              [list]: tabName === 'give' ? that.formatList(that.data[list].concat(res.data), 'moneyBack') : that.data[list].concat(res.data),
               [page]: that.data[page] + 1,
               [haseMore]: true
             });
@@ -157,7 +157,9 @@ Page({
   },
   // 上拉加载更多
   onReachBottom(){
-    this.getMoreData(this.data.activeAccount);
+    if (this.data.activeAccount === 'receive' || this.data.activeAccount === 'give') {
+      this.getMoreData(this.data.activeAccount);
+    }
   },
   onTabChange(e){
     const tabName = e.detail.name;
@@ -251,14 +253,28 @@ Page({
   onPullDownRefresh(){
     if (this.data.activeAccount === 'receive') {
       this.getAccountReceiveList();
-    } else {
+    } else if (this.data.activeAccount === 'give') {
       this.setData({
-        searchValue: ''
+        searchValue: '',
+        givePage: 1
       });
       this.getAccountGiveList();
+    } else if (this.data.activeAccount === 'detail') {
+      this.setData({
+        detailSearchValue: ''
+      });
+      this.getAccountDetailList();
     }
   },
-
+  // 格式化金额
+  formatList(data, nameProp){
+    let dataset = [];
+    data.forEach(item=>{
+      item[nameProp] = parseFloat(item[nameProp]).toFixed(2);
+      dataset.push(item);
+    })
+    return dataset;
+  },
   /**
    * 随礼tab列表
     */ 
@@ -278,7 +294,7 @@ Page({
       wx.hideLoading();
       wx.stopPullDownRefresh();
       that.setData({
-        giveUsersList: res.data,
+        giveUsersList: that.formatList(res.data, 'moneyBack'),
         giveHasMore: res.data.length < that.data.giveTotal ? true : false
       });
     }).catch(err=>{
@@ -302,7 +318,7 @@ Page({
     }).get().then(res=>{
       wx.hideLoading();
       that.setData({
-        giveUsersList: res.data
+        giveUsersList: that.formatList(res.data, 'moneyBack')
       });
     }).catch(err=>{
       wx.hideLoading();
@@ -464,6 +480,7 @@ Page({
       dataset.push(datasetItem);
     }
     // console.log("个人随礼收礼总数据dataset=", dataset);
+    wx.stopPullDownRefresh();
     this.setData({
       accountDetailList: dataset,
       accountDetailTotal: dataset.length

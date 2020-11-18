@@ -9,7 +9,7 @@ Page({
       this.setData({
         accountInfo: dataParams
       });
-      console.log("明细跳转数据：", dataParams);
+      // console.log("明细跳转数据：", dataParams);
     }
   }
 })

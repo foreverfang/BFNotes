@@ -19,7 +19,7 @@
       wx:key="index"
       num=""
       tag=""
-      price="{{item.curMoney}}"
+      price="{{item.money}}"
       desc="{{'日期：' + item.date + '，' + '事由：' + item.cause + '，' + '关系：' +item.relation + '，' + '备注：' +item.remark}}"
       title="{{item.name}}"
       thumb="{{ item.avatarUrl ? item.avatarUrl : defaultAvatar }}"

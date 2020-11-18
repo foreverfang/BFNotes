@@ -15,7 +15,7 @@ Page({
   formatList(data){
     let dataset = [];
     data.forEach(item=>{
-      item.curMoney = parseFloat(item.money - item.moneyBack).toFixed(2);
+      item.money = parseFloat(item.money).toFixed(2);
       dataset.push(item);
     })
     return dataset;
@@ -43,7 +43,7 @@ Page({
         relationList: that.formatList(res.data),
         hasMore: res.data.length < that.data.total ? true : false
       });
-      console.log("relationList=", res.data);
+      // console.log("relationList=", res.data);
     }).catch(err=>{
       wx.hideLoading();
       Notify({ type: 'danger', message: err });
