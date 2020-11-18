@@ -1,5 +1,6 @@
 import Dialog from '../../miniprogram_npm/@vant/weapp/dialog/dialog';
-import Notify from '../../miniprogram_npm/@vant/weapp/notify/notify'
+import Notify from '../../miniprogram_npm/@vant/weapp/notify/notify';
+let gTotal = 0;
 Page({
   data: {
     relationList: [],
@@ -27,6 +28,7 @@ Page({
     const result = await db.collection('fang_receive_users').where({
       accountId: that.data.accountInfo.accountId
     }).count();
+    gTotal = result.total;
     this.setData({
       total: result.total
     });
@@ -50,10 +52,15 @@ Page({
     });
   },
   // 上拉加载更多
-  onReachBottom(){
+  async onReachBottom(){
     const that = this;
     const db = wx.cloud.database({env:'scallop-2g4ppt2ya3b48261'});
-    
+    const result = await db.collection('fang_receive_users').where({
+      accountId: that.data.accountInfo.accountId
+    }).count();
+    that.setData({
+      total: result.total
+    });
     // 获取下一页数据
     if (that.data.relationList.length < that.data.total) {
       wx.showLoading({
@@ -98,16 +105,19 @@ Page({
       title: '正在加载...',
       mask: true
     });
-    db.collection('fang_receive_users').where({
+    db.collection('fang_receive_users').orderBy('createTime', 'desc').where({
       accountId: that.data.accountInfo.accountId,
       name: db.RegExp({
         regexp: that.data.searchValue,//做为关键字进行匹配
         options: 'i',//不区分大小写
       })
-    }).get().then(res=>{
+    }).limit(that.data.pageSize).get().then(res=>{
       wx.hideLoading();
       that.setData({
-        relationList: res.data
+        relationList: res.data,
+        total: res.data.length,
+        hasMore: (!that.data.searchValue && res.data.length < gTotal) ? true : false, // 空搜索情况
+        page: 1
       });
     }).catch(err=>{
       wx.hideLoading();
@@ -168,6 +178,10 @@ Page({
             });
           }
           Notify({ type: 'success', message: '删除成功' });
+          that.setData({
+            page: 1,
+            searchValue: ''
+          });
           that.getRelationList();
         },
         fail: err=>{

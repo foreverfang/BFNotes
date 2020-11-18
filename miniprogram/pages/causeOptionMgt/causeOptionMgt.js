@@ -21,7 +21,7 @@ Page({
       title: '正在加载...',
       mask: true
     });
-    db.collection('fang_cause_options').orderBy('createTime', 'desc').limit(that.data.pageSize).get().then(res=>{
+    db.collection('fang_cause_options').orderBy('createTime', 'asc').limit(that.data.pageSize).get().then(res=>{
       wx.hideLoading();
       wx.stopPullDownRefresh();
       that.setData({

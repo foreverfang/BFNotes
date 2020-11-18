@@ -4,6 +4,7 @@ const REMAIN_ACCOUNT = '余账'; // ta欠我人情
 const OWE_ACCOUNT = '差账'; // 还欠ta人情
 const LEVEL_ACCOUNT = '平账'; 
 let globalAccountDetailList = []; // 存明细数据备份
+let gGiveTotal = 0;
 Page({
   data: {
     activeAccount: 'receive',
@@ -156,8 +157,15 @@ Page({
     }
   },
   // 上拉加载更多
-  onReachBottom(){
+  async onReachBottom(){
     if (this.data.activeAccount === 'receive' || this.data.activeAccount === 'give') {
+      if(this.data.activeAccount === 'give') {
+        const db = wx.cloud.database({env:'scallop-2g4ppt2ya3b48261'});
+        const result = await db.collection('fang_give_users').count();
+        this.setData({
+          giveTotal: result.total
+        });
+      }
       this.getMoreData(this.data.activeAccount);
     }
   },
@@ -235,7 +243,10 @@ Page({
             }).then(resp=>{
               Notify({ type: 'success', message: '删除成功' });
               instance.close();
-              this.getAccountReceiveList();
+              that.setData({
+                receivePage: 1
+              });
+              that.getAccountReceiveList();
             }).catch(err=>{
               instance.close();
               console.error("账本内部数据删除失败：", err);
@@ -286,6 +297,7 @@ Page({
     this.setData({
       giveTotal: result.total
     });
+    gGiveTotal = result.total;
     wx.showLoading({
       title: '正在加载...',
       mask: true
@@ -310,15 +322,18 @@ Page({
       title: '正在加载...',
       mask: true
     });
-    db.collection('fang_give_users').where({
+    db.collection('fang_give_users').orderBy('createTime', 'desc').where({
       name: db.RegExp({
         regexp: that.data.searchValue,//做为关键字进行匹配
         options: 'i',//不区分大小写
       })
-    }).get().then(res=>{
+    }).limit(that.data.givePageSize).get().then(res=>{
       wx.hideLoading();
       that.setData({
-        giveUsersList: that.formatList(res.data, 'moneyBack')
+        giveUsersList: that.formatList(res.data, 'moneyBack'),
+        giveTotal: res.data.length,
+        giveHasMore: (!that.data.searchValue && res.data.length < gGiveTotal) ? true : false, // 空搜索情况
+        givePage: 1
       });
     }).catch(err=>{
       wx.hideLoading();
@@ -361,6 +376,10 @@ Page({
             });
           }
           Notify({ type: 'success', message: '删除成功' });
+          that.setData({
+            givePage: 1,
+            searchValue: ''
+          });
           that.getAccountGiveList();
         },
         fail: err=>{

@@ -1,6 +1,6 @@
 import Dialog from '../../miniprogram_npm/@vant/weapp/dialog/dialog';
 import Notify from '../../miniprogram_npm/@vant/weapp/notify/notify';
-
+let gTotal = 0;
 Page({
   data: {
     fangTarvelList: [],
@@ -18,6 +18,7 @@ Page({
     this.setData({
       total: result.total
     });
+    gTotal = result.total;
     wx.showLoading({
       title: '正在加载...',
       mask: true
@@ -34,10 +35,13 @@ Page({
     });
   },
   // 上拉加载更多
-  onReachBottom(){
+  async onReachBottom(){
     const that = this;
     const db = wx.cloud.database({env:'scallop-2g4ppt2ya3b48261'});
-    
+    const result = await db.collection('fang_travel').count();
+    that.setData({
+      total: result.total
+    });
     // 获取下一页数据
     if (that.data.fangTarvelList.length < that.data.total) {
       wx.showLoading({
@@ -81,21 +85,28 @@ Page({
       title: '正在加载...',
       mask: true
     });
-    db.collection('fang_travel').where({
+    db.collection('fang_travel').orderBy('createTime', 'desc').where({
       destination: db.RegExp({
         regexp: that.data.searchValue,//做为关键字进行匹配
         options: 'i',//不区分大小写
       })
-    }).get().then(res=>{
+    }).limit(that.data.pageSize).get().then(res=>{
       wx.hideLoading();
       that.setData({
-        fangTarvelList: res.data
+        fangTarvelList: res.data,
+        total: res.data.length,
+        hasMore: (!that.data.searchValue && res.data.length < gTotal) ? true : false, // 空搜索情况
+        page: 1
       });
     }).catch(err=>{
       wx.hideLoading();
     })
   },
   onShow(){
+    this.setData({
+      page: 1,
+      searchValue: ''
+    });
     this.getTravelList();
   },
   onLoad(){
@@ -140,6 +151,10 @@ Page({
             }
             Notify({ type: 'success', message: '删除成功' });
             instance.close();
+            that.setData({
+              page: 1,
+              searchValue: ''
+            });
             this.getTravelList();
           }).catch(err=>{
             Notify({ type: 'warning', message: '删除失败' });

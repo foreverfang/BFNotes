@@ -16,7 +16,6 @@ Page({
       }
       return value;
     },
-    minDate: new Date(2010, 0, 1).getTime(),
     relationOptions: [],
     dateShow: false,
     actionType: 'ADD'
