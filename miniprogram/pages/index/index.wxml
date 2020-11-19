@@ -19,7 +19,7 @@
 
   <van-cell-group title="我的收礼账本">
     <view wx:if="{{receiveTotalList.length}}">
-      <van-panel wx:for="{{receiveTotalList}}" wx:key="index" title="{{item.year}}年份" desc="总金额：￥{{item.totalMoney}}" status="">
+      <van-panel wx:for="{{receiveTotalList}}" catchtap="onReceiveView" data-item="{{item}}" wx:key="index" title="{{item.year}}年份" desc="总金额：￥{{item.totalMoney}}" status="">
         <!-- <view>账本内容</view> -->
       </van-panel>
     </view>
@@ -35,7 +35,7 @@
 
   <van-cell-group title="我的随礼账本">
     <view wx:if="{{giveTotalList.length}}">
-      <van-panel wx:for="{{giveTotalList}}" wx:key="index" title="{{item.year}}年份" desc="总金额：￥{{item.totalMoney}}" status="">
+      <van-panel wx:for="{{giveTotalList}}" catchtap="onGiveView" data-item="{{item}}" wx:key="index" title="{{item.year}}年份" desc="总金额：￥{{item.totalMoney}}" status="">
         <!-- <view>账本内容</view> -->
       </van-panel>
     </view>

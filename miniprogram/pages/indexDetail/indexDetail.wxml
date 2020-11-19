@@ -1,0 +1,10 @@
+<view>
+  <view class="index-detail-title">
+    <text>我的{{detailInfo.year}}年{{detailInfo.accountType === 'receive' ? '收礼': '随礼'}}记录</text>
+  </view>
+  <van-cell-group>
+    <view wx:for="{{ detailInfo.accountType === 'receive' ? detailInfo.receiveList : detailInfo.giveList}}" wx:key="index">
+      <van-cell title="{{item.name}}" value="{{'￥' + (detailInfo.accountType === 'receive' ? item.money : item.moneyBack)}}" label="{{'日期：'+item.date}}"></van-cell>
+    </view>
+  </van-cell-group>
+</view>

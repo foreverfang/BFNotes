@@ -34,10 +34,10 @@ Page({
       wx.hideLoading();
       const len = res.data.length;
       let imgList = [];
-      if (len>=4) {
-        imgList = res.data.splice(len - 4);
+      if (len >= 4) {
+        imgList = res.data.splice(len - 4); // 最多展示4张
       } else {
-        imgList = res.data.length ? res.data : that.data.imgList
+        imgList = res.data.length && res.data[0].travelUrl ? res.data : that.data.imgList
       }
       that.setData({
         indexImgList: imgList
@@ -133,21 +133,34 @@ Page({
     }
     for(let i = 0; i < yearList.length; i++){
       let currentYearData = [];
+      let receiveList = []; // 收礼详情
+      let giveList = []; // 随礼详情
       for(let j = 0; j < data.length; j++){
         if (yearList[i] === data[j].year + '') {
           //金额按年份汇总
           currentYearData.push(data[j][nameProp]);
+          if (data[j].accountType === 'receive') { // 收礼
+            data[j].money = parseFloat(data[j].money).toFixed(2);
+            receiveList.push(data[j]);
+          } else if (data[j].accountType === 'give') { // 随礼
+            data[j].moneyBack = parseFloat(data[j].moneyBack).toFixed(2);
+            giveList.push(data[j]);
+          }
         }
       }
       dataset.push({
         year: yearList[i],
-        moneyList: currentYearData
+        moneyList: currentYearData,
+        receiveList: receiveList,
+        giveList: giveList
       });
     }
     dataset.forEach(item=>{
       totalData.push({
         year: item.year,
-        totalMoney: this.getSum(item.moneyList)
+        totalMoney: this.getSum(item.moneyList),
+        receiveList: item.receiveList,
+        giveList: item.giveList
       });
     });
     return totalData;
@@ -193,7 +206,14 @@ Page({
       favorGiveList: list
     });
   },
-
+  onReceiveView(e){
+    const params = Object.assign({}, e.currentTarget.dataset.item, { accountType: 'receive'});
+    wx.navigateTo({ url: "/pages/indexDetail/indexDetail?params=" + JSON.stringify(params) });
+  },
+  onGiveView(e){
+    const params = Object.assign({}, e.currentTarget.dataset.item, { accountType: 'give'});
+    wx.navigateTo({ url: "/pages/indexDetail/indexDetail?params=" + JSON.stringify(params) });
+  },
   onUnload: function() {
     // 页面销毁时执行
     wx.clearStorage();

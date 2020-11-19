@@ -14,7 +14,8 @@
     "pages/relationOptionsForm/relationOptionsForm",
     "pages/causeOptionMgt/causeOptionMgt",
     "pages/causeOptionsForm/causeOptionsForm",
-    "pages/relationAccountDetail/relationAccountDetail"
+    "pages/relationAccountDetail/relationAccountDetail",
+    "pages/indexDetail/indexDetail"
   ],
   "window":{
     "backgroundTextStyle":"light",

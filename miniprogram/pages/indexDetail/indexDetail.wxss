@@ -1,0 +1,6 @@
+.index-detail-title {
+  text-align: center;
+  margin: 30rpx 10rpx;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  font-weight: bold;
+}
