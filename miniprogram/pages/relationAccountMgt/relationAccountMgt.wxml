@@ -2,6 +2,7 @@
 <van-notify id="van-notify" />
 <van-tabs sticky animated active="{{ activeAccount }}" bind:change="onTabChange">
   <van-tab title="收礼" name="receive">
+    <van-notice-bar color="#1989fa" background="#ecf9ff" wrapable mode="closeable" text="账本类似于礼金薄，用于记录某个时间点的收礼事件，账本点进去，可做具体的礼金记录"/>
     <van-cell icon="add-o" is-link title="新增账本" link-type="navigateTo" url="/pages/accountForm/accountForm">
     </van-cell>
     <view>
