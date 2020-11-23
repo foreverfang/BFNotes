@@ -179,7 +179,7 @@ Page({
     if (len >= 3 ) {
       list = resultData.splice(len-3)
     } else {
-      list = resultData.splice(len)
+      list = resultData;
     }
     this.setData({
       favorReceiveList: list

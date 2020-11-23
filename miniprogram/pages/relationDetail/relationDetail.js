@@ -183,7 +183,7 @@ Page({
     const relationResult = await Promise.all(tasks); 
     wx.hideLoading();
     if (relationResult.length <=0) {
-      return null;
+      return { data: [] };
     }
     return relationResult.reduce((pre, cur)=>{
       return {
