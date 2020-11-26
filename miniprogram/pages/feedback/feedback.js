@@ -18,6 +18,10 @@ Page({
   },
   // 提交
   onSubmit(e){
+    if (!this.data.feedbackInfo.remark) {
+      Notify({ type: 'warning', message: '请输入内容' });
+      return false;
+    }
     wx.showLoading({
       title: '正在加载...',
       mask: true
