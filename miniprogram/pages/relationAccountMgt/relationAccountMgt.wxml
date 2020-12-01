@@ -10,7 +10,7 @@
         <view wx:if="{{receiveAccountList.length}}">
           <van-swipe-cell catch:click="onReceiveView" wx:for="{{receiveAccountList}}" wx:key="index" left-width="{{ 65 }}" right-width="{{ 65 }}" data-item="{{item}}" async-close catch:close="onClose">
             <view slot="left" class="van-swipe-cell_delete">编辑</view>
-            <van-cell title="{{item.accountName}}" value="{{item.date}}" size="large" label="{{'总金额：￥'+ item.totalMoney}}" custom-class="van-cell_account" />
+            <van-cell is-link title="{{item.accountName}}" value="{{item.date}}" size="large" label="{{'总金额：￥'+ item.totalMoney}}" custom-class="van-cell_account" />
             <view slot="right" class="van-swipe-cell_delete">删除</view>
           </van-swipe-cell>
           <van-divider wx:if="{{receiveHasMore}}" contentPosition="center">加载更多（共{{receiveTotal}}条）</van-divider>
